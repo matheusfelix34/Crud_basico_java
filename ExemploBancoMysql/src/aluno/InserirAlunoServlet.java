@@ -1,6 +1,9 @@
 package aluno;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -33,17 +36,26 @@ public class InserirAlunoServlet extends HttpServlet {
 		String nome = request.getParameter("nome");
 		String endereco = request.getParameter("endereco");
 		int codigo = Integer.parseInt(request.getParameter("codigo"));
+		String saida="";
+		try {
+			 saida=digest(nome);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("deu ruim negao");
+		}
+		System.out.println(saida);
 		
 		//Instanciar um objeto do tipo JavaBean que representa a tabela (ou entidade) e preencher os atributos dessa classe 
 		
-		try{ 
+	/*	try{ 
 			inserir(nome, endereco, codigo);
 		} catch(SQLException ex){
 			ex.printStackTrace();
 			
 			response.getOutputStream().println("Ops.... aconteceu um erro na inclusão!");
 		}
-		
+		*/
 		
 		
 	}
@@ -135,6 +147,17 @@ public class InserirAlunoServlet extends HttpServlet {
 			
 			 
 	}
+	
+	public String digest(String password) throws NoSuchAlgorithmException, 
+    UnsupportedEncodingException {
+ MessageDigest algoritmo = MessageDigest.getInstance("SHA-256");
+ byte digestMessage[] = algoritmo.digest(password.getBytes("UTF-8"));
+ StringBuilder hexPassword = new StringBuilder();
+ for (byte aByte : digestMessage) {
+    hexPassword.append(String.format("%02X", 0xFF & aByte));
+ }
+ return hexPassword.toString();
+}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
